@@ -35,3 +35,41 @@
 
    Veure FILLES.md.
    ============================================================ */
+
+/* ============================================================
+   LA CARPETA VIATGERA, OFERTA NOMÉS AQUÍ
+   ------------------------------------------------------------
+   En Pol, 7/10/2026: «posa-li com a actualització disponible només
+   a la Mireia».
+
+   Per què és aquí i no a `js/millores.js` de la mare: el catàleg
+   només sap filtrar per ROL (`tutor`, `especialista`, `direccio`),
+   i ella és tutora com tres més. Posant-la a la mare s'oferiria a
+   tothom. Aquest fitxer, en canvi, és només d'aquesta app i la
+   sincronització no el trepitja mai.
+
+   Si algun dia s'ha d'oferir a més gent, es treu d'aquí i es posa
+   a `js/millores.js` amb `interruptor: 'EINES_CARPETA'` i el `rols`
+   que toqui. La recepta és a MILLORES.md, a `carpeta-viatgera`.
+
+   ⚠ Això NOMÉS l'hi OFEREIX. Encara no la té: quan cliqui «Jo la
+   vull!», arriba el correu i llavors se li posa
+   `window.EINES_CARPETA = true` aquí mateix.
+   ============================================================ */
+if (typeof MILLORES !== 'undefined' && Array.isArray(MILLORES) &&
+    !MILLORES.some(function (m) { return m.id === 'carpeta-viatgera'; })) {
+  MILLORES.push({
+    id: 'carpeta-viatgera',
+    titol: 'La Carpeta Viatgera, dins de la nota',
+    ras: 'Poses la nota de la Carpeta Viatgera un sol cop i surt sola, amb el seu pes, a Matemàtiques i Català.',
+    mes: [
+      'Tens una pestanya de notes que es diu «Carpeta Viatgera» i hi avalues com a qualsevol altra assignatura: les activitats que vulguis, amb el seu pes.',
+      'La nota que en surt es copia sola a una columna de Matemàtiques i de Català, al final de la graella i just abans de la Mitjana. Allà no s\'hi pot escriure: només mirar.',
+      'Compta per a la nota final amb pes 2. Si canvies una activitat de la Carpeta, les dues columnes es tornen a posar al dia.',
+    ],
+    data: '2026-10-07',
+    /* Així, quan ja la tingui encesa, el catàleg li dirà «Ja la tens»
+       en lloc de tornar-li a oferir el botó. */
+    interruptor: 'EINES_CARPETA',
+  });
+}
