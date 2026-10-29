@@ -1,12 +1,12 @@
 {
   "mestra": "Mireia Duran",
-  "mareVersio": "v318",
+  "mareVersio": "v319",
   "propis": [
     "manifest.webmanifest",
     "manifest.json"
   ],
   "rol": "tutor",
-  "sincronitzat": "2026-10-27",
+  "sincronitzat": "2026-10-29",
   "fitxersMare": [
     ".gitignore",
     "CLAUDE.md",
