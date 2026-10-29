@@ -1,6 +1,6 @@
 {
   "mestra": "Mireia Duran",
-  "mareVersio": "v320",
+  "mareVersio": "v321",
   "propis": [
     "manifest.webmanifest",
     "manifest.json"
@@ -65,6 +65,7 @@
     "js/rubriques.js",
     "js/segentrevistes.js",
     "js/seients.js",
+    "js/temporitzador.js",
     "js/versio.js",
     "manifest.json",
     "manifest.webmanifest",
