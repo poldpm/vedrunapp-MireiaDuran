@@ -90,3 +90,64 @@ if (typeof MILLORES !== 'undefined' && Array.isArray(MILLORES) &&
    ============================================================ */
 window.AVIS_INICI = 'assoliments-automatics';
 
+
+/* ============================================================
+   ⚠ TEMPORAL (22/11/2026): EL PERFIL QUE HA QUEDAT BUIT AL FULL
+   ------------------------------------------------------------
+   Obrint l'app per primer cop al MacBook, el perfil del full ha
+   quedat buit: l'avís de l'inici es va marcar com a llegit abans
+   que hagués arribat el perfil, i l'app el va desar tal com el
+   tenia en aquell moment (buit). L'arranjament de debò és a l'app
+   per a tothom (v380); això d'aquí és la xarxa per als aparells
+   que encara corrin la versió d'abans, perquè aquest fitxer el
+   navegador el va a buscar sempre a la xarxa.
+
+   Si del full arriba un perfil buit i aquest aparell en té un de
+   bo DE LA MIREIA (amb el seu nom), es queda el bo, se'n guarda
+   una còpia i es torna a desar al full. Es comprova el nom perquè
+   totes les apps viuen a la mateixa adreça i comparteixen el que
+   guarden al navegador: no s'ha de pujar mai el perfil d'una altra.
+
+   Es pot treure quan el perfil ja torni a ser bo al full.
+   ============================================================ */
+(function () {
+  if (typeof _perfilArribaDelFull === 'function') return;   // l'app ja ho sap fer sola
+  var orig = window.appsScriptGet;
+  if (typeof orig !== 'function') return;
+  function teAlgo(o) {
+    return !!(o && typeof o === 'object' && Object.keys(o).some(function (k) { return Array.isArray(o[k]) && o[k].length; }));
+  }
+  function buit(p) {
+    if (!p || typeof p !== 'object') return true;
+    if (String(p.nom || '').trim() || String(p.cognom || '').trim()) return false;
+    if (p.tutorCurs || p.tutorLinia) return false;
+    if (teAlgo(p.classes) || teAlgo(p.altres)) return false;
+    return !(Array.isArray(p.cursos) && p.cursos.length);
+  }
+  function esDeLaMireia(p) { return !!(p && !buit(p) && /mireia/i.test(String(p.nom || ''))); }
+  var curat = false;
+  window.appsScriptGet = async function (params) {
+    var r = await orig.apply(this, arguments);
+    try {
+      var a = params && params.action;
+      if ((a === 'bootstrap' || a === 'loadProfile') && r && r.ok && buit(r.profile)) {
+        var local = null;
+        try { local = JSON.parse(localStorage.getItem('vedruna_perfil') || 'null'); } catch (e) {}
+        if (!esDeLaMireia(local) && typeof _perfil !== 'undefined' && esDeLaMireia(_perfil)) local = _perfil;
+        if (esDeLaMireia(local)) {
+          try { localStorage.setItem('vedruna_perfil_copia', JSON.stringify(local)); } catch (e) {}
+          var bo = JSON.parse(JSON.stringify(local));
+          if (r.profile && r.profile.millores && typeof r.profile.millores === 'object') {
+            bo.millores = Object.assign({}, bo.millores || {}, r.profile.millores);
+          }
+          r = Object.assign({}, r, { profile: bo });
+          if (!curat && typeof appsScriptPost === 'function') {
+            curat = true;
+            appsScriptPost({ action: 'saveProfile', profile: JSON.stringify(bo) }).catch(function () {});
+          }
+        }
+      }
+    } catch (e) {}
+    return r;
+  };
+})();
